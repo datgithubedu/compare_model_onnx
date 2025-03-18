@@ -13,8 +13,13 @@ class ONNXDetector:
         self.conf_threshold = conf_thres
         self.iou_threshold = iou_thres
         
-        # Tạo ONNX Runtime session
-        self.session = ort.InferenceSession(model_path, providers=['CUDAExecutionProvider'])
+        # Tạo ONNX Runtime session, ưu tiên CUDA
+        self.session = ort.InferenceSession(model_path, providers=['CUDAExecutionProvider', 'CPUExecutionProvider'])
+
+        # In ra các providers khả dụng và đang được sử dụng
+        print("Available providers:", ort.get_available_providers())
+        print("Using device:", self.session.get_providers())
+
         self.input_name = self.session.get_inputs()[0].name
         self.output_names = [output.name for output in self.session.get_outputs()]
         
